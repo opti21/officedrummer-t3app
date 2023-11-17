@@ -31,6 +31,7 @@ export const env = createEnv({
     // Add ` on ID and SECRET if you want to make sure they're not empty
     TWITCH_CLIENT_ID: z.string(),
     TWITCH_CLIENT_SECRET: z.string(),
+    OFD_USER_ID: z.string().optional(),
   },
 
   /**
@@ -53,6 +54,7 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     TWITCH_CLIENT_ID: process.env.TWITCH_CLIENT_ID,
     TWITCH_CLIENT_SECRET: process.env.TWITCH_CLIENT_SECRET,
+    OFD_USER_ID: process.env.OFD_USER_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

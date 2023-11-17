@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { env } from "~/env.mjs";
 
 import {
   createTRPCRouter,
@@ -12,8 +13,6 @@ export const songRequestsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       await ctx.db.insert(requests).values({
         twitchUser: input.name,
