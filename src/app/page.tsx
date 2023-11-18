@@ -87,12 +87,7 @@ export default function Home() {
         id: index
     }, {
         onSuccess: () => {
-            void Swal.fire({
-                title: "Removed!",
-                icon: "success",
-                timer: 1500,
-                showConfirmButton: false,
-            });
+            console.log('deleted')
         }
 
     });
