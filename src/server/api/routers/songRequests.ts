@@ -9,10 +9,20 @@ import {
 } from "~/server/api/trpc";
 import { requests } from "~/server/db/schema";
 
+const allowedUsers = [env.OFD_USER_ID, env.OPTI_USER_ID];
+
 export const songRequestsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
+      const accountInfo = await ctx.db.query.accounts.findFirst({
+        where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
+      })
+
+      const twitchId = accountInfo?.providerAccountId
+      if (!allowedUsers.includes(twitchId)) {
+        throw new Error("You are not authorized to delete this request")
+      }
 
       await ctx.db.insert(requests).values({
         twitchUser: input.name,
@@ -23,6 +33,15 @@ export const songRequestsRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
+      const accountInfo = await ctx.db.query.accounts.findFirst({
+        where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
+      })
+
+      const twitchId = accountInfo?.providerAccountId
+      if (!allowedUsers.includes(twitchId)) {
+        throw new Error("You are not authorized to delete this request")
+      }
+
       await ctx.db.delete(requests).where(eq(requests.id, input.id));
     }),
 
