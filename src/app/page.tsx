@@ -196,7 +196,7 @@ export default function Home() {
                   fontSize={15}
                   radiusLineWidth={2}
                 />
-                <button
+                {isAdmin && <button
                   className="p-8 aspect-square rounded-full bg-[#df3428] text-white absolute top-[19rem] left-[19rem] transform z-10 shadow-xl shadow-yellow-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => {
                     resetSound();
@@ -206,7 +206,7 @@ export default function Home() {
                   disabled={formattedRequests.length === 0}
                 >
                   Spin
-                </button>
+                </button>}
               </div>
             </div>
 
