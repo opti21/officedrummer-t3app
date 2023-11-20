@@ -146,6 +146,8 @@ export default function Home() {
                       `,
                       backdrop: false,
                       confirmButtonText: "Remove",
+                      showCancelButton: true,
+                      cancelButtonText: "Not Here"
                     }).then((response) => {
                         if (response.isConfirmed) {
                             handleRemoveRequest(formattedRequests[prizeNumber]!.requestId!);
