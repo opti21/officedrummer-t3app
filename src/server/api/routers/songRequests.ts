@@ -51,7 +51,17 @@ export const songRequestsRouter = createTRPCRouter({
     });
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+  clearAll: protectedProcedure.mutation(async ({ ctx }) => {
+    const accountInfo = await ctx.db.query.accounts.findFirst({
+      where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
+    })
+
+    const twitchId = accountInfo?.providerAccountId
+    if (!allowedUsers.includes(twitchId)) {
+      throw new Error("You are not authorized to delete this request")
+    }
+
+    await ctx.db.delete(requests);
   }),
+
 });

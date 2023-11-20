@@ -9,6 +9,7 @@ import { WheelItem, emptyWheelData, wheelDataAtom, wowSoundVolumeAtom } from "~/
 import ConfettiExplosion from 'react-confetti-explosion';
 import NameList from "~/app/_components/NameList";
 import { api } from "~/trpc/react";
+import { useSession } from "next-auth/react";
 
 const Wheel = dynamic(
   () => import("react-custom-roulette").then((mod) => mod.Wheel),
@@ -40,6 +41,8 @@ export default function Home() {
     enabled: !mustStartSpinning,
   });
   const { mutate: deleteRequest } = api.songRequest.delete.useMutation();
+  const { mutate: clearAll } = api.songRequest.clearAll.useMutation()
+  const { data: isAdmin } = api.users.isAdmin.useQuery()
 
   const formattedRequests: WheelItem[] = useMemo(() => {
     if (!requests) return [];
@@ -91,6 +94,30 @@ export default function Home() {
         }
 
     });
+  }
+
+  const handleClearAll = () => {
+    void Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to clear all the requests?",
+      confirmButtonText: "Clear All",
+      confirmButtonColor: "#DC2626",
+      showCancelButton: true,
+      cancelButtonText: "Nah"
+
+    }).then(response => {
+      if (response.isConfirmed) {
+        clearAll(undefined, {
+          onSuccess: () => {
+            void Swal.fire({
+              icon: "success",
+              title: "Requests Cleared"
+            })
+          }
+        })
+      }
+    })
+
   }
 
   return (
@@ -183,10 +210,20 @@ export default function Home() {
               </div>
             </div>
 
-            {/* <div className='w-[475px] h-full'>
+            {isAdmin && <div className='w-[475px] h-full'>
               <FakeHeader />
-              {/* <NameList audioRef={audioRef} />
-            </div> */}
+              {/* <NameList audioRef={audioRef} /> */}
+              <div className='w-full max-h-screen bg-white p-2 rounded-b-lg '>
+
+                <button
+                  className='w-1/4 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded ml-2'
+                  onClick={handleClearAll}
+                >
+                    Clear All Requests
+                </button>
+
+              </div>
+            </div>}
           </div>
 
         </div>
