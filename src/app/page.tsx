@@ -1,15 +1,15 @@
 "use client"
 
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { WheelItem, emptyWheelData, wheelDataAtom, wowSoundVolumeAtom } from "~/server/state";
-import ConfettiExplosion from 'react-confetti-explosion';
-import NameList from "~/app/_components/NameList";
+// import NameList from "~/app/_components/NameList";
 import { api } from "~/trpc/react";
-import { useSession } from "next-auth/react";
+import Confetti from 'react-confetti'
+import { useWindowSize } from "@uidotdev/usehooks";
 
 const Wheel = dynamic(
   () => import("react-custom-roulette").then((mod) => mod.Wheel),
@@ -34,6 +34,7 @@ export default function Home() {
 //   const data = useAtomValue(wheelDataAtom)
   const [isExploding, setIsExploding] = useState(false);
   const [volume, setVolume] = useAtom(wowSoundVolumeAtom);
+  
   const audioRef = useRef<HTMLAudioElement>(null);
   const { data: requests } = api.songRequest.getLatest.useQuery(undefined, {
     refetchInterval: 1000,
@@ -74,7 +75,7 @@ export default function Home() {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
-  }, [audioRef]);
+  }, [audioRef, volume]);
 
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,12 +140,19 @@ export default function Home() {
         
         <audio ref={audioRef} src="/wow.mp3" preload="auto"></audio>
 
-        {/* {isExploding && <ConfettiExplosion 
-          zIndex={20}
-          force={0.8}
-          onComplete={() => setIsExploding(false)}
-          width={1600}
-        />} */}
+        <Confetti
+          width={1920}
+          height={1080}
+          numberOfPieces={isExploding ? 1000 : 0}
+          recycle={false}
+          gravity={0.2}
+          initialVelocityX={5}
+          initialVelocityY={5}
+          onConfettiComplete={() => setIsExploding(false)}
+          style={{
+            zIndex: 20,
+          }}
+        />
 
         <div className="flex flex-col w-full max-w-7xl h-screen max-h-screen">
 
