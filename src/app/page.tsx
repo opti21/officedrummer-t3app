@@ -208,22 +208,19 @@ export default function Home() {
                   Spin
                 </button>}
               </div>
+              {isAdmin && <div className='w-full pb-2'>
+                {/* <NameList audioRef={audioRef} /> */}
+
+                  <button
+                    className='w-[200px] bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded ml-2'
+                    onClick={handleClearAll}
+                  >
+                      Clear All Requests
+                  </button>
+
+              </div>}
             </div>
 
-            {isAdmin && <div className='w-[475px] h-full'>
-              <FakeHeader />
-              {/* <NameList audioRef={audioRef} /> */}
-              <div className='w-full max-h-screen bg-white p-2 rounded-b-lg '>
-
-                <button
-                  className='w-1/4 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded ml-2'
-                  onClick={handleClearAll}
-                >
-                    Clear All Requests
-                </button>
-
-              </div>
-            </div>}
           </div>
 
         </div>
