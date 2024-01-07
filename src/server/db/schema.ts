@@ -7,6 +7,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  tinyint,
   varchar,
 } from "drizzle-orm/mysql-core";
 import { type AdapterAccount } from "next-auth/adapters";
@@ -31,6 +32,7 @@ export const requests = mysqlTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updatedAt").onUpdateNow(),
+	requestPlayed: tinyint("request_played").default(0),
   },
   (example) => ({
     twitchIdIdx: index("twitchId_idx").on(example.twitchId),
