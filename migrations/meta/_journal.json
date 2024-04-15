@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1713143132070,
+      "tag": "0000_many_invaders",
+      "breakpoints": true
+    }
+  ]
+}

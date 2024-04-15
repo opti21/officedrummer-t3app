@@ -17,11 +17,11 @@ export const songRequestsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const accountInfo = await ctx.db.query.accounts.findFirst({
         where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
-      })
+      });
 
-      const twitchId = accountInfo?.providerAccountId
+      const twitchId = accountInfo?.providerAccountId;
       if (!allowedUsers.includes(twitchId)) {
-        throw new Error("You are not authorized to delete this request")
+        throw new Error("You are not authorized to delete this request");
       }
 
       await ctx.db.insert(requests).values({
@@ -35,11 +35,11 @@ export const songRequestsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const accountInfo = await ctx.db.query.accounts.findFirst({
         where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
-      })
+      });
 
-      const twitchId = accountInfo?.providerAccountId
+      const twitchId = accountInfo?.providerAccountId;
       if (!allowedUsers.includes(twitchId)) {
-        throw new Error("You are not authorized to delete this request")
+        throw new Error("You are not authorized to delete this request");
       }
 
       await ctx.db.delete(requests).where(eq(requests.id, input.id));
@@ -54,14 +54,13 @@ export const songRequestsRouter = createTRPCRouter({
   clearAll: protectedProcedure.mutation(async ({ ctx }) => {
     const accountInfo = await ctx.db.query.accounts.findFirst({
       where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
-    })
+    });
 
-    const twitchId = accountInfo?.providerAccountId
+    const twitchId = accountInfo?.providerAccountId;
     if (!allowedUsers.includes(twitchId)) {
-      throw new Error("You are not authorized to delete this request")
+      throw new Error("You are not authorized to delete this request");
     }
 
     await ctx.db.delete(requests);
   }),
-
 });
