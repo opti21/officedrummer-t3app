@@ -5,6 +5,8 @@ import {
 } from 'react';
 import { wheelDataAtom, wowSoundVolumeAtom } from '~/server/state';
 import { Trash2 } from 'react-feather';
+import Swal from 'sweetalert2';
+import { api } from '~/trpc/react';
 
 
 type Props = {
@@ -15,6 +17,7 @@ const NameList: FC<Props> = ({ audioRef }) => {
   const [option, setOption] = useState<string>('');
   const [names, setNames] = useAtom(wheelDataAtom);
   const [volume, setVolume] = useAtom(wowSoundVolumeAtom);
+  const { mutate: clearAll } = api.songRequest.clearAll.useMutation()
 
   const handleAddName = () => {
     if (option === '') {
@@ -69,11 +72,58 @@ const NameList: FC<Props> = ({ audioRef }) => {
     }
   };
 
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+    }
+  };
+
+  const handleClearAll = () => {
+    void Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to clear all the requests?",
+      confirmButtonText: "Clear All",
+      confirmButtonColor: "#DC2626",
+      showCancelButton: true,
+      cancelButtonText: "Nah"
+
+    }).then(response => {
+      if (response.isConfirmed) {
+        clearAll(undefined, {
+          onSuccess: () => {
+            void Swal.fire({
+              icon: "success",
+              title: "Requests Cleared"
+            })
+          }
+        })
+      }
+    })
+
+  }
 
   return (
     <div className='w-full max-h-screen bg-white p-2 rounded-b-lg '>
-      <div>
-        <label>Volume: </label>
+      <div className='w-full flex flex-row items-center justify-between'>
+        <div>
+          <label>Volume: </label>
+          <input 
+              type="range" 
+              min="0" 
+              max="1" 
+              step="0.01" 
+              value={volume} 
+              onChange={handleVolumeChange} 
+          />
+        </div>
+        <button
+          className='w-1/2 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded ml-2'
+          onClick={handleClearAll}
+        >
+            Clear All Requests
+        </button>
       </div>
       <div className='flex flex-row w-full my-2'>
         <input

@@ -1,6 +1,6 @@
 {
   "name": "officedrummer-frontend-new",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.3.5",
-    "@libsql/client": "0.4.0-pre.1",
+    "@libsql/client": "0.6.0",
     "@planetscale/database": "^1.11.0",
     "@t3-oss/env-nextjs": "^0.7.0",
     "@tanstack/react-query": "^4.32.6",
@@ -22,9 +22,9 @@
     "@trpc/server": "^10.37.1",
     "@uidotdev/usehooks": "^2.4.1",
     "dotenv": "^16.3.1",
-    "drizzle-orm": "^0.28.5",
+    "drizzle-orm": "^0.30.7",
     "jotai": "^2.5.1",
-    "next": "^14.0.0",
+    "next": "^14.2.1",
     "next-auth": "^4.24.4",
     "react": "18.2.0",
     "react-confetti": "^6.1.0",
@@ -46,7 +46,7 @@
     "@typescript-eslint/parser": "^6.3.0",
     "autoprefixer": "^10.4.14",
     "dotenv-cli": "^7.3.0",
-    "drizzle-kit": "^0.19.13",
+    "drizzle-kit": "^0.20.14",
     "eslint": "^8.47.0",
     "eslint-config-next": "^14.0.0",
     "mysql2": "^3.6.1",

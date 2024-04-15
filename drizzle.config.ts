@@ -1,14 +1,13 @@
 import { type Config } from "drizzle-kit";
-import "dotenv/config";
 import { env } from "~/env.mjs";
-
 
 export default {
   schema: "./src/server/db/schema.ts",
-  out: "./src/server/db",
-  driver: "mysql2",
+  out: "./migrations",
+  driver: "turso",
   dbCredentials: {
-    connectionString: env.DATABASE_URL,
+    url: env.TURSO_CONNECTION_URL,
+    authToken: env.TURSO_AUTH_TOKEN,
   },
   tablesFilter: ["officedrummer_*"],
 } satisfies Config;
