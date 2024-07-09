@@ -72,77 +72,81 @@ const ImageSlider = () => {
     };
   }, [nextSlide, prevSlide]);
 
-  if (!imagesLoaded) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-2xl font-bold text-white">Loading images...</div>
-      </div>
-    );
-  }
-
   return (
     <div
-      className={`relative flex items-center justify-center overflow-hidden bg-gray-900 ${
+      className={`relative flex items-center justify-center overflow-hidden bg-black ${
         isFullscreen ? "fixed inset-0 z-50" : "h-screen w-full"
       }`}
     >
-      {/* Projector screen background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/fire-bg.jpg')",
-          filter: "brightness(0.3)",
-        }}
-      ></div>
-      {/* Slider container */}
-      <div
-        className={`relative overflow-hidden rounded-lg bg-white bg-opacity-10 shadow-lg ${
-          isFullscreen ? "h-full w-full" : "h-3/4 w-4/5"
-        }`}
-      >
-        {/* Current image */}
-        <img
-          src={images[currentIndex]?.url}
-          alt={images[currentIndex]?.alt}
-          className="h-full w-full object-contain"
-        />
-        {/* Navigation buttons */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 transform rounded-full bg-black bg-opacity-50 p-2 text-white"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 transform rounded-full bg-black bg-opacity-50 p-2 text-white"
-          aria-label="Next slide"
-        >
-          <ChevronRight size={24} />
-        </button>
-        {/* Fullscreen toggle button */}
-        <button
-          onClick={toggleFullscreen}
-          className="absolute right-4 top-4 rounded-full bg-black bg-opacity-50 p-2 text-white"
-        >
-          {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-        </button>
-        {/* Indicator dots */}
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform space-x-2">
-          {images.map((_, index) => (
-            <div
-              key={index}
-              className={`h-3 w-3 rounded-full ${
-                index === currentIndex ? "bg-white" : "bg-gray-400"
-              }`}
-              role="button"
-              aria-label={`Go to slide ${index + 1}`}
-              onClick={() => setCurrentIndex(index)}
-            ></div>
-          ))}
-        </div>
-      </div>
+      {!imagesLoaded ? (
+        <>
+          {/* Loading state background */}
+          <div className="absolute inset-0 bg-gray-900 opacity-80"></div>
+          <div className="relative z-10 text-2xl font-bold text-white">
+            🔥🔥🔥 Loading awesomeness 🔥🔥🔥
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Projector screen background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/fire-bg.jpg')",
+              filter: "brightness(0.3)",
+            }}
+          ></div>
+          {/* Slider container */}
+          <div
+            className={`relative overflow-hidden rounded-lg bg-white bg-opacity-10 shadow-lg ${
+              isFullscreen ? "h-full w-full" : "h-3/4 w-4/5"
+            }`}
+          >
+            {/* Current image */}
+            <img
+              src={images[currentIndex]?.url}
+              alt={images[currentIndex]?.alt}
+              className="h-full w-full object-contain"
+            />
+            {/* Navigation buttons */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-4 top-1/2 -translate-y-1/2 transform rounded-full bg-black bg-opacity-50 p-2 text-white"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-4 top-1/2 -translate-y-1/2 transform rounded-full bg-black bg-opacity-50 p-2 text-white"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={24} />
+            </button>
+            {/* Fullscreen toggle button */}
+            <button
+              onClick={toggleFullscreen}
+              className="absolute right-4 top-4 rounded-full bg-black bg-opacity-50 p-2 text-white"
+            >
+              {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            </button>
+            {/* Indicator dots */}
+            <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform space-x-2">
+              {images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-3 w-3 rounded-full ${
+                    index === currentIndex ? "bg-white" : "bg-gray-400"
+                  }`}
+                  role="button"
+                  aria-label={`Go to slide ${index + 1}`}
+                  onClick={() => setCurrentIndex(index)}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
