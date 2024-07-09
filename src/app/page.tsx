@@ -8,11 +8,11 @@ const ImageSlider = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const images = [
     {
-      url: "https://utfs.io/f/e7847959-0eff-4072-aa77-2a6d320691af-c3o020.png",
+      url: "https://utfs.io/f/89e1be5a-d2fe-4264-b921-2e15768cb784-qkuk5f.png",
       alt: "OTK group photo with most of the male members bald",
     },
     {
-      url: "https://utfs.io/f/a89ac0e2-6da0-431b-a1f0-16a38c269ba4-8rde2r.png",
+      url: "https://utfs.io/f/2ca95ff4-8a78-4e4a-85cd-da0cc180690c-bio0yg.png",
       alt: "OTK group photo now all male members have wigs on",
     },
   ];
