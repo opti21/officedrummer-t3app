@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const ImageSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const images = [
     {
       url: "https://utfs.io/f/89e1be5a-d2fe-4264-b921-2e15768cb784-qkuk5f.png",
@@ -20,6 +21,25 @@ const ImageSlider = () => {
       alt: "A bald officedrummer",
     },
   ];
+
+  const preloadImages = useCallback(() => {
+    const imagePromises = images.map((image) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = image.url;
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+    });
+
+    Promise.all(imagePromises)
+      .then(() => setImagesLoaded(true))
+      .catch((error) => console.error("Failed to load images", error));
+  }, [images]);
+
+  useEffect(() => {
+    preloadImages();
+  }, [preloadImages]);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -51,6 +71,14 @@ const ImageSlider = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [nextSlide, prevSlide]);
+
+  if (!imagesLoaded) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-2xl font-bold text-white">Loading images...</div>
+      </div>
+    );
+  }
 
   return (
     <div
