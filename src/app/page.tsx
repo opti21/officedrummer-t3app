@@ -15,6 +15,10 @@ const ImageSlider = () => {
       url: "https://utfs.io/f/2ca95ff4-8a78-4e4a-85cd-da0cc180690c-bio0yg.png",
       alt: "OTK group photo now all male members have wigs on",
     },
+    {
+      url: "https://utfs.io/f/dcf89662-dc70-43f7-8b13-3ee0560b3fb9-1snav.png",
+      alt: "A bald officedrummer",
+    },
   ];
 
   const nextSlide = useCallback(() => {
