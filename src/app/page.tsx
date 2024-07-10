@@ -17,8 +17,8 @@ const ImageSlider = () => {
       alt: "OTK group photo with most of the male members bald",
     },
     {
-      url: "https://utfs.io/f/dcf89662-dc70-43f7-8b13-3ee0560b3fb9-1snav.png",
-      alt: "A bald officedrummer",
+      url: "https://utfs.io/f/1d03d5dc-15d0-4b41-8eb2-df40383bb6de-b6x8c2.jpg",
+      alt: "A bald officedrummer in space wearing a star trek uniform",
     },
   ];
 
