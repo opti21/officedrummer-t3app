@@ -11,9 +11,9 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "OfficeDrummer Wheel",
-  description: "Made by opti",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  title: "HI OTK!",
+  description: "",
+  icons: [{ rel: "icon", url: "/leftStick.png" }],
 };
 
 export default function RootLayout({

@@ -1,247 +1,154 @@
 "use client";
 
-import { useAtom } from "jotai";
-import dynamic from "next/dynamic";
-import Head from "next/head";
-import { useEffect, useMemo, useRef, useState } from "react";
-import Swal from "sweetalert2";
-import {
-  type WheelItem,
-  emptyWheelData,
-  wowSoundVolumeAtom,
-} from "~/server/state";
-// import NameList from "~/app/_components/NameList";
-import { api } from "~/trpc/react";
-import Confetti from "react-confetti";
+import React, { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const Wheel = dynamic(
-  () => import("react-custom-roulette").then((mod) => mod.Wheel),
-  { ssr: false },
-);
+const ImageSlider = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const images = [
+    {
+      url: "https://utfs.io/f/89e1be5a-d2fe-4264-b921-2e15768cb784-qkuk5f.png",
+      alt: "OTK group photo",
+    },
+    {
+      url: "https://utfs.io/f/2ca95ff4-8a78-4e4a-85cd-da0cc180690c-bio0yg.png",
+      alt: "OTK group photo with most of the male members bald",
+    },
+    {
+      url: "https://utfs.io/f/1d03d5dc-15d0-4b41-8eb2-df40383bb6de-b6x8c2.jpg",
+      alt: "A bald officedrummer in space wearing a star trek uniform",
+    },
+  ];
 
-const FakeHeader = () => {
+  const preloadImages = useCallback(() => {
+    const imagePromises = images.map((image) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = image.url;
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+    });
+
+    Promise.all(imagePromises)
+      .then(() => setImagesLoaded(true))
+      .catch((error) => console.error("Failed to load images", error));
+  }, [images]);
+
+  useEffect(() => {
+    preloadImages();
+  }, [preloadImages]);
+
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  }, [images.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length,
+    );
+  }, [images.length]);
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        prevSlide();
+      } else if (event.key === "ArrowRight") {
+        nextSlide();
+      } else if (event.key === "f") {
+        toggleFullscreen();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [nextSlide, prevSlide]);
+
   return (
-    <div className="flex h-10 w-full justify-end rounded-t-lg bg-purple-700">
-      <div className="mr-3 flex flex-row items-center gap-2">
-        <div className="h-4 w-4 rounded-full bg-white"></div>
-        <div className="h-4 w-4 rounded-full bg-white"></div>
-        <div className="h-4 w-4 rounded-full bg-white"></div>
-      </div>
+    <div
+      className={`relative flex items-center justify-center overflow-hidden bg-black ${
+        isFullscreen ? "fixed inset-0 z-50" : "h-screen w-full"
+      }`}
+    >
+      {!imagesLoaded ? (
+        <>
+          {/* Loading state background */}
+          <div className="absolute inset-0 bg-gray-900 opacity-80"></div>
+          <div className="relative z-10 text-2xl font-bold text-white">
+            🔥🔥🔥 Loading awesomeness 🔥🔥🔥
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Projector screen background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/fire-bg.jpg')",
+              filter: "brightness(0.3)",
+            }}
+          ></div>
+          {/* Slider container */}
+          <div
+            className={`relative overflow-hidden rounded-lg bg-white bg-opacity-10 shadow-lg ${
+              isFullscreen ? "h-full w-full" : "h-3/4 w-4/5"
+            }`}
+          >
+            {/* Current image */}
+            <img
+              src={images[currentIndex]?.url}
+              alt={images[currentIndex]?.alt}
+              className="h-full w-full object-contain"
+            />
+            {/* Navigation buttons */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-4 top-1/2 -translate-y-1/2 transform rounded-full bg-black bg-opacity-50 p-2 text-white"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-4 top-1/2 -translate-y-1/2 transform rounded-full bg-black bg-opacity-50 p-2 text-white"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={24} />
+            </button>
+            {/* Fullscreen toggle button */}
+            <button
+              onClick={toggleFullscreen}
+              className="absolute right-4 top-4 rounded-full bg-black bg-opacity-50 p-2 text-white"
+            >
+              {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            </button>
+            {/* Indicator dots */}
+            <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform space-x-2">
+              {images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-3 w-3 rounded-full ${
+                    index === currentIndex ? "bg-white" : "bg-gray-400"
+                  }`}
+                  role="button"
+                  aria-label={`Go to slide ${index + 1}`}
+                  onClick={() => setCurrentIndex(index)}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default function Home() {
-  const [mustStartSpinning, setMustStartSpinning] = useState(false);
-  const [prizeNumber, setPrizeNumber] = useState(0);
-  //   const data = useAtomValue(wheelDataAtom)
-  const [isExploding, setIsExploding] = useState(false);
-  const [volume, setVolume] = useAtom(wowSoundVolumeAtom);
-
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const { data: requests } = api.songRequest.getLatest.useQuery(undefined, {
-    refetchInterval: 1000,
-    refetchIntervalInBackground: true,
-    enabled: !mustStartSpinning,
-  });
-  const { mutate: deleteRequest } = api.songRequest.delete.useMutation();
-  const { mutate: clearAll } = api.songRequest.clearAll.useMutation();
-  const { data: isAdmin } = api.users.isAdmin.useQuery();
-
-  const formattedRequests: WheelItem[] = useMemo(() => {
-    if (!requests) return [];
-
-    return requests.map((item) => ({
-      option: item.twitchUser,
-      style: { textColor: "black" },
-      optionSize: 1,
-      requestText: item.requestText!,
-      requestId: item.id,
-    }));
-  }, [requests]);
-
-  const playSound = async () => {
-    if (audioRef.current) {
-      await audioRef.current.play();
-    }
-  };
-
-  const resetSound = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0; // Reset the playback position to the start
-      audioRef.current.pause();
-    }
-  };
-
-  useEffect(() => {
-    // set audio volume
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
-  }, [audioRef, volume]);
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-  };
-
-  const handleRemoveRequest = (index: number) => {
-    deleteRequest(
-      {
-        id: index,
-      },
-      {
-        onSuccess: () => {
-          console.log("deleted");
-        },
-      },
-    );
-  };
-
-  const handleClearAll = () => {
-    void Swal.fire({
-      title: "Are you sure?",
-      text: "Are you sure you want to clear all the requests?",
-      confirmButtonText: "Clear All",
-      confirmButtonColor: "#DC2626",
-      showCancelButton: true,
-      cancelButtonText: "Nah",
-    }).then((response) => {
-      if (response.isConfirmed) {
-        clearAll(undefined, {
-          onSuccess: () => {
-            void Swal.fire({
-              icon: "success",
-              title: "Requests Cleared",
-            });
-          },
-        });
-      }
-    });
-  };
-
-  return (
-    <>
-      <Head>
-        <title>Officedrummer Wheel</title>
-        <meta name="description" content="Generated by create-t3-app" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main
-        className="flex max-h-screen flex-col items-center justify-center"
-        style={{
-          backgroundImage: "url(/fire-bg.jpg)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <audio ref={audioRef} src="/wow.mp3" preload="auto"></audio>
-
-        <Confetti
-          width={1920}
-          height={1080}
-          numberOfPieces={isExploding ? 1000 : 0}
-          recycle={false}
-          gravity={0.2}
-          initialVelocityX={5}
-          initialVelocityY={5}
-          onConfettiComplete={() => setIsExploding(false)}
-          style={{
-            zIndex: 20,
-          }}
-        />
-
-        <div className="flex h-screen max-h-screen w-full max-w-7xl flex-col">
-          <div className="flex flex-row justify-center gap-2 py-2">
-            <div className="rounded-lg bg-white">
-              <FakeHeader />
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={volume}
-                onChange={handleVolumeChange}
-              />
-              <div className="ofd-wheel-container relative aspect-square">
-                <Wheel
-                  mustStartSpinning={mustStartSpinning}
-                  onStopSpinning={async () => {
-                    setMustStartSpinning(false);
-                    setIsExploding(true);
-                    await playSound();
-                    void Swal.fire({
-                      title: "The winner is...",
-                      html: `<h1 className='text-xl font-bold'>${formattedRequests[prizeNumber]?.option}</h1>
-                      <p>${formattedRequests[prizeNumber]?.requestText}</p>
-                      `,
-                      backdrop: false,
-                      confirmButtonText: "Remove",
-                      showCancelButton: true,
-                      cancelButtonText: "Not Here",
-                    }).then((response) => {
-                      if (response.isConfirmed) {
-                        handleRemoveRequest(
-                          formattedRequests[prizeNumber]!.requestId!,
-                        );
-                      }
-                    });
-                  }}
-                  prizeNumber={prizeNumber}
-                  data={
-                    formattedRequests.length > 0
-                      ? formattedRequests
-                      : emptyWheelData
-                  }
-                  backgroundColors={["#F49201", "#F24108", "#FFFFFF"]}
-                  textColors={["#ffffff"]}
-                  innerRadius={0}
-                  spinDuration={0.5}
-                  pointerProps={{
-                    src: "/leftStick.png",
-                    style: {
-                      transform: "rotate(-90deg)",
-                    },
-                  }}
-                  fontSize={15}
-                  radiusLineWidth={2}
-                />
-                {isAdmin && (
-                  <button
-                    className="absolute left-[19rem] top-[19rem] z-10 aspect-square transform rounded-full bg-[#df3428] p-8 text-white shadow-xl shadow-yellow-200 disabled:cursor-not-allowed disabled:opacity-50"
-                    onClick={() => {
-                      resetSound();
-                      setPrizeNumber(
-                        Math.floor(Math.random() * formattedRequests.length),
-                      );
-                      setMustStartSpinning(true);
-                    }}
-                    disabled={formattedRequests.length === 0}
-                  >
-                    Spin
-                  </button>
-                )}
-              </div>
-              {isAdmin && (
-                <div className="w-full pb-2">
-                  {/* <NameList audioRef={audioRef} /> */}
-
-                  <button
-                    className="ml-2 w-[200px] rounded bg-orange-500 px-4 py-2 font-bold text-white hover:bg-orange-700"
-                    onClick={handleClearAll}
-                  >
-                    Clear All Requests
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </main>
-    </>
-  );
-}
+export default ImageSlider;
