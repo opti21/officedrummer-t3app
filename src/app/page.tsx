@@ -210,7 +210,7 @@ export default function Home() {
                   fontSize={15}
                   radiusLineWidth={2}
                 />
-                {true && (
+                {isAdmin && (
                   <button
                     className="absolute left-[15rem] top-[15rem] z-10 transform rounded-full disabled:cursor-not-allowed disabled:opacity-50"
                     onClick={() => {
