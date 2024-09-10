@@ -133,7 +133,7 @@ export default function Home() {
       <main
         className="flex max-h-screen flex-col items-center justify-center"
         style={{
-          backgroundImage: "url(/officedrummer_bald.jpg)",
+          backgroundImage: "url(/fire-bg.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -212,7 +212,7 @@ export default function Home() {
                 />
                 {isAdmin && (
                   <button
-                    className="absolute left-[15rem] top-[15rem] z-10 transform rounded-full disabled:cursor-not-allowed disabled:opacity-50"
+                    className="absolute left-[19rem] top-[19rem] z-10 aspect-square transform rounded-full bg-[#df3428] p-8 text-white shadow-xl shadow-yellow-200 disabled:cursor-not-allowed disabled:opacity-50"
                     onClick={() => {
                       resetSound();
                       setPrizeNumber(
@@ -226,7 +226,7 @@ export default function Home() {
                       width: "200px",
                     }}
                   >
-                    <div className="relative h-full w-full">
+                    {/* <div className="relative h-full w-full">
                       <img
                         src="/bald_drummer.png"
                         alt="Spin"
@@ -235,7 +235,7 @@ export default function Home() {
                       <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">
                         Spin
                       </span>
-                    </div>
+                    </div> */}
                   </button>
                 )}
               </div>
