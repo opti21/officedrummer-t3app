@@ -223,16 +223,6 @@ export default function Home() {
                     disabled={formattedRequests.length === 0}
                   >
                     Spin
-                    {/* <div className="relative h-full w-full">
-                      <img
-                        src="/bald_drummer.png"
-                        alt="Spin"
-                        className="h-full w-full rounded-full object-cover"
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">
-                        Spin
-                      </span>
-                    </div> */}
                   </button>
                 )}
               </div>
