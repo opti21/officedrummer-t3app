@@ -221,11 +221,8 @@ export default function Home() {
                       setMustStartSpinning(true);
                     }}
                     disabled={formattedRequests.length === 0}
-                    style={{
-                      height: "200px",
-                      width: "200px",
-                    }}
                   >
+                    Spin
                     {/* <div className="relative h-full w-full">
                       <img
                         src="/bald_drummer.png"
