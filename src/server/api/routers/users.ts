@@ -1,28 +1,18 @@
 import { env } from "~/env.mjs";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const adminUsers = [env.OFD_USER_ID, env.OPTI_USER_ID];
 
 export const usersRouter = createTRPCRouter({
-    isAdmin: publicProcedure
-    .query(async ({ ctx }) => {
-        if (!ctx.session) {
-            return false
-        }
+  isAdmin: protectedProcedure.query(({ ctx }) => {
+    if (!ctx.session.twitchId) {
+      return false;
+    }
 
-        if (!ctx.session.user) {
-            return false
-        }
+    if (!adminUsers.includes(ctx.session.twitchId)) {
+      return false;
+    }
 
-        const accountInfo = await ctx.db.query.accounts.findFirst({
-          where: (accounts, { eq }) => eq(accounts.userId, ctx.session!.user.id),
-        })
-
-        const twitchId = accountInfo?.providerAccountId
-        if (!adminUsers.includes(twitchId)) {
-            return false
-        }
-
-        return true
-    })
-})
+    return true;
+  }),
+});

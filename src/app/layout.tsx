@@ -1,14 +1,7 @@
 import "~/styles/globals.css";
 
-import { Inter } from "next/font/google";
-import { cookies } from "next/headers";
-
+import { ClerkProvider, UserButton } from "@clerk/nextjs";
 import { TRPCReactProvider } from "~/trpc/react";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata = {
   title: "OfficeDrummer Wheel",
@@ -22,12 +15,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider cookies={cookies().toString()}>
-          {children}
-        </TRPCReactProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <TRPCReactProvider>
+        <html lang="en">
+          <body className={`relative font-sans`}>
+            <div className="absolute right-4 top-4 z-50">
+              <UserButton />
+            </div>
+            {children}
+          </body>
+        </html>
+      </TRPCReactProvider>
+    </ClerkProvider>
   );
 }

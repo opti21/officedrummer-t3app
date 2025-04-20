@@ -15,30 +15,28 @@ export const songRequestsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      const accountInfo = await ctx.db.query.accounts.findFirst({
-        where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
-      });
+      if (!ctx.session.twitchId) {
+        throw new Error("You are not authorized to delete this request");
+      }
 
-      const twitchId = accountInfo?.providerAccountId;
-      if (!allowedUsers.includes(twitchId)) {
+      if (!allowedUsers.includes(ctx.session.twitchId)) {
         throw new Error("You are not authorized to delete this request");
       }
 
       await ctx.db.insert(requests).values({
         twitchUser: input.name,
-        twitchId: ctx.session.user.id,
+        twitchId: ctx.session.twitchId,
       });
     }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      const accountInfo = await ctx.db.query.accounts.findFirst({
-        where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
-      });
+      if (!ctx.session.twitchId) {
+        throw new Error("You are not authorized to delete this request");
+      }
 
-      const twitchId = accountInfo?.providerAccountId;
-      if (!allowedUsers.includes(twitchId)) {
+      if (!allowedUsers.includes(ctx.session.twitchId)) {
         throw new Error("You are not authorized to delete this request");
       }
 
@@ -52,12 +50,11 @@ export const songRequestsRouter = createTRPCRouter({
   }),
 
   clearAll: protectedProcedure.mutation(async ({ ctx }) => {
-    const accountInfo = await ctx.db.query.accounts.findFirst({
-      where: (accounts, { eq }) => eq(accounts.userId, ctx.session.user.id),
-    });
+    if (!ctx.session.twitchId) {
+      throw new Error("You are not authorized to delete this request");
+    }
 
-    const twitchId = accountInfo?.providerAccountId;
-    if (!allowedUsers.includes(twitchId)) {
+    if (!allowedUsers.includes(ctx.session.twitchId)) {
       throw new Error("You are not authorized to delete this request");
     }
 

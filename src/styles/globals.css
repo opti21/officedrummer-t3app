@@ -2,18 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-.ofd-wheel-container {
-    width: 700px;
-    height: 700px;
+html,
+body {
+  height: 100%;
+}
 
-    > div {
-         height: 100%;
-         width: 100%;
-         max-height: unset;
-         max-width: unset;
-    }
+.ofd-wheel-container {
+  width: 700px;
+  height: 700px;
+
+  > div {
+    height: 100%;
+    width: 100%;
+    max-height: unset;
+    max-width: unset;
+  }
 }
 
 body {
-    background-color: #000000;
+  background-color: #000000;
 }
